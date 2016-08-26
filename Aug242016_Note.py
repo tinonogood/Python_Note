@@ -29,17 +29,17 @@ print(first_name[::2]) # 字串切片(slice) [起始:結束:步距]
 
 
 
-weeks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-for day in weeks:
+weeks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] #list以"[]"儲存item
+for day in weeks: # for迴圈 將list中item依次跑過
     if day == "Saturday" or day == "Sunday":
         print("Holiday is : " + day)
     else:
         print("Workday is : " + day )
 
-input_day = "FRI"
+input_day = "FRI" #變數小寫
 
 for day in weeks:
-    if input_day.lower() in day.lower():
+    if input_day.lower() in day.lower(): #method: lower()置換小寫;upper()置換大寫
         print(day)
     else:
         print(None)
@@ -52,21 +52,17 @@ week = {'mon': "Monday",
         'thur': "Thursday",
         'fri': "Friday",
         'sat': "Saturday",
-        'sun': "Sunday"}
+        'sun': "Sunday"} #"{}"儲存hash,dic(key:value)
 
-week.setdefault(input_day.lower(), 'None')
-print(week[input_day.lower()])
-
-
-
-
+week.setdefault(input_day.lower(), 'None') #用法: dict.setdefault(key, default),若key 在dict中，回傳value 值，反之，將 key:default 加入 dict 之中
+print(week[input_day.lower()]) #將key: input_day.lower()塞入week並回傳其value
 
 
 pork = {'A': 1, 'K': 13, 'Q':12}
 # print(pork['J'] )
 
 pork_number = 'A'
-default_val=0
+default_val=0 #default_val提出處理
 
 pork.setdefault(pork_number, default_val)
 # if not(pork_number in pork.keys()):
