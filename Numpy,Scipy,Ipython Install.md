@@ -33,11 +33,12 @@
 
 因用pip3.5 Install, 需改以用python3.5執行即可import
 
--  `ERROR: test_common.test_face`
--  `File "/usr/local/python3/lib/python3.5/site-packages/nose/case.py", line 198, in runTest self.test(*self.arg)`
--  `File "/usr/local/python3/lib/python3.5/site-packages/scipy/misc/tests/test_common.py", line 168, in test_face assert_equal(face().shape, (768, 1024, 3))`
--  `File "/usr/local/python3/lib/python3.5/site-packages/scipy/misc/common.py", line 410, in face import bz2`
--  `File "/usr/local/python3/lib/python3.5/bz2.py", line 22, in <module> from _bz2 import BZ2Compressor, BZ2Decompressor`
--  `ImportError: No module named '_bz2'`
+- `ERROR: test_common.test_face`
+
+  `File "/usr/local/python3/lib/python3.5/site-packages/nose/case.py", line 198, in runTest self.test(*self.arg)`
+  `File "/usr/local/python3/lib/python3.5/site-packages/scipy/misc/tests/test_common.py", line 168, in test_face assert_equal(face().shape, (768, 1024, 3))`
+  `File "/usr/local/python3/lib/python3.5/site-packages/scipy/misc/common.py", line 410, in face import bz2`
+  `File "/usr/local/python3/lib/python3.5/bz2.py", line 22, in <module> from _bz2 import BZ2Compressor, BZ2Decompressor`
+  `ImportError: No module named '_bz2'`
 
 
