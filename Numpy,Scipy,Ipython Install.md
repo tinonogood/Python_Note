@@ -14,7 +14,16 @@
 
 ### 錯誤
 
-- ` python setup.py build`
+- Error Message: ImportError: No module named 'Cython'
 
-Error Message: ImportError: No module named 'Cython'
+以python setup.py build安裝失敗
+
+改用pip3.5 install numpy
+
+- `"ImportError: Need nose >= 1.0.0 for tests - see http://somethingaboutorange.com/mrl/projects/nose" `
+
+- `“ImportError: No module named scipy” `
+
+因用3.5, 改以python3.5執行即可import
+
 
