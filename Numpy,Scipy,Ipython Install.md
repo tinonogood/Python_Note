@@ -6,7 +6,15 @@
 
 至numpy資料夾
 
-` python setup.py build`
+`/usr/local/python3/bin/pip3.5 install numpy`
+
+## Get Scipy
+
+[Scipy's Github](https://github.com/scipy/scipy)
+
+### 錯誤
+
+- ` python setup.py build`
 
 Error Message: ImportError: No module named 'Cython'
 
