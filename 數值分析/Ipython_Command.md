@@ -11,3 +11,15 @@
   `-p`: 性能分析
   
 - `%hist` 命令歷史紀錄
+
+
+## 錯誤
+
+  `In [3]: a = arange(5)`
+  `---------------------------------------------------------------------------`
+  `NameError                                 Traceback (most recent call last)`
+  `<ipython-input-3-1dd9434971cc> in <module>()`
+  `----> 1 a = arange(5)`
+
+  `NameError: name 'arange' is not defined`
+
