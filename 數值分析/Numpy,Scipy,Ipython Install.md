@@ -2,9 +2,11 @@
 
 [Numpy's Github](https://github.com/numpy/numpy "https://github.com/numpy/numpy")
 
+develop repo.
+
 `git clone git://github.com/numpy/numpy.git numpy`
 
-至numpy資料夾
+or 以pip安裝
 
 `/usr/local/python3/bin/pip3.5 install numpy`
 
@@ -12,7 +14,15 @@
 
 [Scipy's Github](https://github.com/scipy/scipy)
 
+以pip安裝
+
 `/usr/local/python3/bin/pip3.5 install scipy`
+
+## Ipython
+
+以pip安裝
+
+`#pip3.5 ipython`
 
 
 安裝套件在 /usr/local/python3/lib/python3.5/site-packages/
