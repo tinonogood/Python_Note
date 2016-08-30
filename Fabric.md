@@ -30,3 +30,17 @@ pip3.5 install fabric
   
    因'operator.isMappingType'為 standard library for Python 2.x, 不存在於python3
    
+   改以python2安裝
+   
+   `#zypper se setuptools `        #安裝python-setuptools, 然後easy_install pip2.6
+   
+   `#zypper in python-setuptools`
+   
+   `#easy_install-2.6 pip`
+   
+   `#pip2.6 install fabric`
+   
+   Successfully installed ecdsa-0.13 fabric-1.12.0 paramiko-1.17.2 pycrypto-2.6.1
+/usr/local/lib64/python2.6/site-packages/pip-8.1.2-py2.6.egg/pip/_vendor/requests/packages/urllib3/util/ssl_.py:122: InsecurePlatformWarning: A true SSLContext object is not available. This prevents urllib3 from configuring SSL appropriately and may cause certain SSL connections to fail. You can upgrade to a newer version of Python to solve this. For more information, see https://urllib3.readthedocs.org/en/latest/security.html#insecureplatformwarning.
+  InsecurePlatformWarning
+   
