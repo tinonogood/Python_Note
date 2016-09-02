@@ -43,6 +43,12 @@ or 以pip安裝
 
 因用pip3.5 Install, 需改以用python3.5執行即可import
 
+- 執行Ipython3出錯: `importerror no module named 'readline'`
+
+  檢查ncurses-devel, 安裝readline:`pip3 install readline`
+  
+- 執行Ipython3 --pylab 出錯:`ImportError: No module named '_tkinter'`
+
 - `ERROR: test_common.test_face`
 
   `File "/usr/local/python3/lib/python3.5/site-packages/nose/case.py", line 198, in runTest self.test(*self.arg)`
