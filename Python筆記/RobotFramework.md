@@ -22,11 +22,11 @@
 
 以TXT/ROBOT (plain text)為例
 
-![](./PIC/RF_1.JPG)
+![](./PIC/RF_2.JPG)
 
 包含四部分: Settings, Variables, Keywords 和 Test Cases.
 
-Setting: 載入所需檔案
+Setting: 載入所需檔案(Resource, Library)
 
 Variables: 設定參數
 
