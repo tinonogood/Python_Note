@@ -1,21 +1,21 @@
 #!/usr/bin/env/python
 # -*- coding: UTF-8 -*-
 
-#2016/10/1 tino 1st
+# 2016/10/1 Tino 1st
 
 import numpy as np
 import math
 
 # CONSTANTS
-MASS_OF_NH3_KILOGRAM_PER_MOLE = (14.001 + 3 * 1.000) * 0.001  # kg/mole
-MASS_OF_NH3 = MASS_OF_NH3_KILOGRAM_PER_MOLE / (6 * math.pow(10, 23))  # kg
-K_BOLTZMANN_J = 1.38064852 * math.pow(10, -23)  # J/K
-K_BOLTZMANN_EV = 8.6173324 * math.pow(10, -5)  # eV/K
-LATTICE_A = 9.49569  # Angstum
-LATTICE_B = 12.8097  # Angstum
-CONC_OF_ACTIVE_SITE = 6 / ( LATTICE_A * LATTICE_B * math.pow(10, -20))  # number of site/m2
-BETA_HEATING_RATE = 3  # K/s
-H_PLANK_J = 6.626070040 * math.pow(10, -34)  # J.sec
+M_NH3_KILOGRAM_PER_MOLE = (14.001 + 3 * 1.000) * 0.001  # MASS_OF_NH3_KILOGRAM_PER_MOLE. kg/mole
+M_NH3 = M_NH3_KILOGRAM_PER_MOLE / (6 * math.pow(10, 23))  # MASS_OF_NH3, kg
+KB_J = 1.38064852 * math.pow(10, -23)  # K_BOLTZMANN_J, J/K
+KB_EV = 8.6173324 * math.pow(10, -5)  # K_BOLTZMANN_EV. eV/K
+LATTICE_A = 9.49569  # Angstrom
+LATTICE_B = 12.8097  # Angstrom
+C_OF_ACTIVE_SITE = 6 / (LATTICE_A * LATTICE_B * math.pow(10, -20))  # CONC_OF_ACTIVE_SITE, number of site/m2
+BETA = 3  # BETA_HEATING_RATE, K/s
+H_J = 6.626070040 * math.pow(10, -34)  # H_PLANK_J, J.sec
 # Rotational constants ( http://www.colby.edu/chemistry/PChem/scripts/ABC.html)
 ROT_CONST_A_NH3 = 610.85  # 1/m
 ROT_CONST_B_NH3 = 983.86  # 1/m
@@ -23,14 +23,16 @@ ROT_CONST_C_NH3 = 983.91  # 1/m
 ROT_CONST_A_H2O = 921.21  # 1/m
 ROT_CONST_B_H2O = 1391.9  # 1/m
 ROT_CONST_C_H2O = 2724.1  # 1/m
-SYM_FACTOR_NH3 = 3
-SYM_FACTOR_H2O = 2
+SIGMA_NH3 = 3  # SYM_FACTOR_NH3
+SIGMA_H2O = 2  # SYM_FACTOR_H2O
 
 
 # variables
 time = 0.00
-# temperture = 100 + BETA_HEATING_RATE * time
+temperature = 100 + BETA * time
 total_pressure = 2 * math.pow(10, -10)  # Pa, （m·kg·s-2）/m^2
+# total_pressure = 1.01325 * math.pow(10, 5)
+volume_per_molecular = KB_J * temperature / total_pressure
 
 # hvs_vib
 hvs_surface = []
@@ -48,9 +50,9 @@ hvs_10h2o = []
 hvs_11h2o = []
 hvs_12h2o = []
 hvs_13h2o = []
-hvs_nh3_gas = []
-hvs_1nh3 = []
-hvs_2nh3 = []
+hvs_nh3_gas = [435.460659, 431.205986, 415.541526, 203.517923, 201.833141, 120.027150]
+hvs_1nh3 = [430.198631, 427.540569, 413.961910, 198.085064, 197.954985, 155.888486, 100.626456, 96.913905, 91.150507, 90.571449, 89.577129, 89.333135, 88.593270, 88.076295, 87.886616, 86.694058, 83.365306, 81.745121, 80.947879, 80.185729, 79.852830, 78.509102, 78.224377, 75.948489, 75.623308, 75.216938, 73.746860, 73.650604, 70.716749, 70.119930, 69.654502, 69.168927, 68.939090, 65.750349, 64.807776, 64.321902, 64.119328, 63.509015, 61.902849, 61.104554, 60.901952, 60.668654, 60.155707, 59.358441, 58.895983, 44.163961, 42.740979, 37.943257, 36.766113, 35.552710, 35.284977, 34.827630, 34.380060, 34.257256, 33.587371, 33.302352, 33.108034, 30.834472, 30.731268, 30.660547, 30.331024, 30.283868, 30.224699, 29.193081, 28.773556, 28.233508, 27.796885, 27.517773, 27.211584, 26.602082, 26.049863, 24.195551, 22.550748, 22.217728, 21.832439, 21.661550, 21.522873, 21.328779, 20.743273, 20.667872, 20.507662, 20.257865, 19.767438, 19.121150, 18.917779, 18.821477, 18.724233, 18.552834, 17.980644, 17.809680, 17.072836, 16.866863, 16.051825, 15.705389, 15.338813, 14.747400]
+hvs_2nh3 = [424.125172, 423.849717, 420.595920, 419.403011, 410.808280, 405.796797, 200.394007, 199.456838, 199.033067, 198.587343, 157.676765, 155.343118, 107.766780, 102.077340, 100.129117, 99.457258, 89.161474, 88.785527, 87.924722, 87.561085, 86.573713, 86.383606, 85.801908, 85.655321, 81.868313, 79.400476, 79.191369, 78.312681, 77.940721, 77.281795, 77.080852, 74.568861, 74.157690, 73.548951, 72.704997, 72.368210, 70.624597, 69.999068, 69.224256, 67.960474, 67.319906, 65.274200, 65.197919, 64.764850, 64.505284, 64.288516, 61.433483, 60.961585, 60.692938, 60.199048, 59.864068, 59.473005, 58.830080, 58.539293, 44.672150, 43.767245, 39.090709, 38.339463, 36.558748, 36.146206, 36.026258, 35.695262, 35.472710, 35.007167, 34.594195, 33.993084, 33.264194, 30.937056, 30.909414, 30.723105, 30.570799, 30.219125, 30.022164, 29.945579, 29.074837, 28.866068, 28.836132, 28.575930, 28.134741, 27.892153, 27.633395, 26.837740, 24.615636, 24.092543, 23.078251, 22.608815, 22.301980, 22.102627, 21.934406, 21.521768, 21.330050, 21.174876, 20.590801, 20.347330, 19.927018, 19.692588, 19.582158, 19.292423, 19.203925, 18.711171, 18.404162, 18.315183, 18.035711, 17.909694, 17.207706, 16.780799, 16.550679, 16.327247]
 hvs_3nh3 = []
 hvs_4nh3 = []
 hvs_5nh3 = []
@@ -63,66 +65,82 @@ hvs_11nh3 = []
 hvs_12nh3 = []
 hvs_13nh3 = []
 
-#hvs_molecular
-
+# hvs_molecular
 
 # method()
-def get_translation_partition_function(mass):
-    translation_partition_functions_at_T = []
-    for temperture in np.linspace(50, 500, 20):
-        translation_partition_function = (2 * np.pi * mass * K_BOLTZMANN_J * temperture / (H_PLANK_J ** 2)) ** 1.5
-        translation_partition_functions_at_T.append(translation_partition_function)
-    return translation_partition_functions_at_T
+# def get_translation_partition_function(mass):
+#     qts_at_T = []  # qt = translation_partition_functions
+#     for t in np.linspace(50, 500, 20):  # t = temperature
+#         qt = (2 * np.pi * mass * KB_J * t / (H_J ** 2)) ** 1.5
+#         qts_at_T.append(qt)
+#     return qts_at_T
 
+def get_translation_partition_function(mass, temperature, pressure):
+    volume = KB_J * temperature / pressure
+    Lambda = np.sqrt((H_J ** 2) / (2 * np.pi * mass * KB_J * temperature))
+    qt = volume / (Lambda ** 3)
+    return qt
+
+# def get_rotation_partition_function_nonlinear(symmetry_factor, rotational_constant_A, rotational_constant_B, rotational_constant_C):
+#     qrs_nonlinear_at_T = []  # qr = translation_rotation_functions
+#     t = 273  # t= temperature
+#     qr_nonlinear = 1 / symmetry_factor * (((KB_J * t / (H_J * 3 * math.pow(10, 8))) ** 1.5) * \
+#     np.sqrt(np.pi / (rotational_constant_A * rotational_constant_B * rotational_constant_C))
+#     qrs_nonlinear_at_T.append(qr_nonlinear)
+#     return qrs_nonlinear_at_T
 
 def get_rotation_partition_function_nonlinear(symmetry_factor, rotational_constant_A, rotational_constant_B, rotational_constant_C):
-    rotation_partition_functions_nonlinear_at_T = []
-    for temperture in np.linspace(50, 500, 20):
-        rotation_partition_function_nonlinear = 1 / symmetry_factor * ((K_BOLTZMANN_J * temperture / H_PLANK_J) ** 1.5) * \
-                                                np.sqrt(np.pi / (rotational_constant_A * rotational_constant_B * rotational_constant_C))
-        rotation_partition_functions_nonlinear_at_T.append(rotation_partition_function_nonlinear)
-    return rotation_partition_functions_nonlinear_at_T
-
+    qrs_nonlinear_at_T = []  # qr = translation_rotation_functions
+    t = 273  # t= temperature
+    qr_nonlinear = 1 / symmetry_factor * (((KB_J * t / (H_J * 3 * math.pow(10, 8))) ** 1.5) * np.sqrt(np.pi / (rotational_constant_A * rotational_constant_B * rotational_constant_C))
+    qrs_nonlinear_at_T.append(qr_nonlinear)
+    return qrs_nonlinear_at_T
 
 def get_vibration_partition_function(hvs):
-    vibration_partition_functions_at_T = []
-    for temperture in np.linspace(50, 500, 20):
-        partition_function = [1.0 / (1.0 - math.exp(-1 * hv * math.pow(10, -3) / (K_BOLTZMANN_EV * temperture))) for
+    qvs_at_T = []  # qv = partition_function
+    for t in np.linspace(50, 500, 20):  # t= temperature
+        partition_function = [1.0 / (1.0 - math.exp(-1 * hv * math.pow(10, -3) / (KB_EV * t))) for
                               hv in hvs]
-        vibration_partition_functions_at_T.append(np.prod(partition_function))
+        qvs_at_T.append(np.prod(partition_function))
         # print(np.prod(partition_function))
-    return vibration_partition_functions_at_T
+    return qvs_at_T
 
 
 def get_gas_molecular_partition_function(gas_molecular):
-    qt = get_translation_partition_function(MASS_OF_NH3)
-    qr = get_rotation_partition_function_nonlinear(SYM_FACTOR_NH3, ROT_CONST_A_NH3, ROT_CONST_B_NH3, ROT_CONST_C_NH3)
+    # qt = get_translation_partition_function(M_NH3)
+    qr = get_rotation_partition_function_nonlinear(SIGMA_NH3, ROT_CONST_A_NH3, ROT_CONST_B_NH3, ROT_CONST_C_NH3)
     qv = get_vibration_partition_function(hvs_nh3_gas)
     gas_molecular_partition_functions_at_T = [i * j * k for i, j, k in zip(qt, qr, qv)]
     # gas_molecular_partition_functions_at_T = [j * k for j, k in zip(qr, qv)]
     return gas_molecular_partition_functions_at_T
-    print(gas_molecular)
 
 def get_rate_const_adsorption():
-    for temperture in np.linspace(50, 500, 20):
-        rate_const_adsorptions = []
+    rate_const_adsorptions = []
+    for t in np.linspace(50, 500, 20):  # t= temperature
         rate_const_adsorption = total_pressure / (
-        np.sqrt(2 * np.pi * MASS_OF_NH3 * K_BOLTZMANN_J * temperture) * CONC_OF_ACTIVE_SITE)
+            np.sqrt(2 * np.pi * M_NH3 * KB_J * t) * C_OF_ACTIVE_SITE)
+        rate_const_adsorptions.append(rate_const_adsorption)
+    return rate_const_adsorptions
 
 # def get_pre_exponential_factor():
 #     pre_exponential_factors = []
 #     Edes = 0.8412 #eV
-#     for temperture in np.linspace(50, 500, 20):
+#     for temperature in np.linspace(50, 500, 20):
 #         rate_const_adsorptions = []
 #         rate_const_adsorptions.append(rate_const_adsorption)
 #     print(rate_const_adsorptions)
 
 
-#Temp,Coverage_NH3 vs pre-exponetial factor
-print(get_translation_partition_function(MASS_OF_NH3))
-print(get_rotation_partition_function_nonlinear(SYM_FACTOR_NH3, ROT_CONST_A_NH3, ROT_CONST_B_NH3, ROT_CONST_C_NH3))
-print(get_vibration_partition_function(hvs_nh3_gas))
+# Temp,Coverage_NH3 vs pre-exponential factor
+# print(get_translation_partition_function(M_NH3))
+print(get_translation_partition_function(M_NH3, 298, 1.01325 * math.pow(10, 5)))
+# print(get_rotation_partition_function_nonlinear(SIGMA_NH3, ROT_CONST_A_NH3, ROT_CONST_B_NH3, ROT_CONST_C_NH3))
+# print(get_vibration_partition_function(hvs_nh3_gas))
+#
+# print(get_vibration_partition_function(hvs_nh3_gas))
+# print(get_vibration_partition_function(hvs_1nh3))
+# print(get_vibration_partition_function(hvs_2nh3))
+# print(get_rate_const_adsorption())
+# print(get_vibration_partition_function(hvs_9nh3))
+# print(get_pre_exponential_factor())
 
-print(get_vibration_partition_function(hvs_8nh3))
-print(get_vibration_partition_function(hvs_9nh3))
-print(get_pre_exponential_factor())
