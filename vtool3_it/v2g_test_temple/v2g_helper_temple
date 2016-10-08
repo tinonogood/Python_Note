@@ -1,0 +1,5 @@
+Usage: v2g -i POSCAR [-o xxx.gjf] [-e H,C,O,...]
+ -h : help
+ -i : input file, ie POSCAR
+ -o : output file, ie xxx.gjf, xxx.com
+ -e : setup element type, ie H,C,O,...

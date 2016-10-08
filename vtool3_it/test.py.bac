@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+
+import sys
+import difflib
+
+#def diffContext(v2g_new, v2g_old, v2g_diff):
+def diff_context(v2g_new, v2g_old, v2g_diff):
+    #Find Diff
+    #fn = open(sys.argv[1], "r")
+    #fo = open(sys.argv[2], "r")
+    fn = open(v2g_new, "r")
+    fo = open(v2g_old, "r")
+    
+    fileNew = fn.readlines()
+    fileOld = fo.readlines()
+    
+    fn.close()
+    fo.close()
+    
+    #outFileDiff = open(sys.argv[3], "w")
+    outFileDiff = open(v2g_diff, "w")
+    
+    diff = difflib.context_diff(fileNew, fileOld, n=1)
+    outFileDiff.write(''.join(diff))
+
+    outFileDiff.close()
