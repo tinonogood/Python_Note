@@ -34,11 +34,20 @@ Keywords: 使用者自訂關鍵字
 
 Test Cases: 執行的測試
 
+### Error Code
+
+1: 	Catchall for general errors
+
+127: the given command is not found
+
 
 ### Ref
 
+[Robot Framework 標準庫](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#standard-libraries)
+
 [Robot Framework User Guide](http://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html)
 
+[Error Code](http://tldp.org/LDP/abs/html/exitcodes.html)
 
 [科科和測試](https://kkboxsqa.wordpress.com/2014/06/25/robot-framework-script-%E7%9A%84%E9%95%B7%E7%9B%B8%EF%BC%9F/)
 
