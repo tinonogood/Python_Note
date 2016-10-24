@@ -1,10 +1,10 @@
 #!/usr/bin/env/python
 # -*- coding: UTF-8 -*-
 
-# 2016/10/1 Tino 1st
-# 2016/10/14 Tino 2nd
+# 2016/10/24 Tino 3rd
 
 import math
+
 
 class Gas:
     """
@@ -12,44 +12,56 @@ class Gas:
     mass = 氣體質量, kg;
     rot_const = rotation constant, 1/m;  rotational constants ( http://www.colby.edu/chemistry/PChem/scripts/ABC.html)
     sigma =  symmetry factor
-
     """
 
-    # def __init__(self, mass=2.99 * math.pow(10,-26), rot_const_a=921.21, rot_const_b=1391.9, rot_const_c=2724.1, sigma=2):
     def __init__(self, mass, rot_const_a, rot_const_b, rot_const_c, sigma):
-        """default: Water, H2O"""
-        # self.mass = 2.99 * math.pow(10, -26)
-        # self.rot_const_a = 921.21
-        # self.rot_const_b = 1391.9
-        # self.rot_const_c = 2724.1
-        # self.sigma = 2
         self.mass = mass
         self.rot_const_a = rot_const_a
         self.rot_const_b = rot_const_b
         self.rot_const_c = rot_const_c
         self.sigma = sigma
 
-    @property
-    def mass(self):
-        return self.mass
+    def get_gas_parameters(self):
+        return self.mass, self.rot_const_a, self.rot_const_b, self.rot_const_c, self.sigma
 
-    # def rot_const_a(self):
-    #     return self.rot_const_a
-    #
-    # def rot_const_b(self):
-    #     return self.rot_const_b
-    #
-    # def rot_const_c(self):
-    #     return self.rot_const_c
-    #
-    # def sigma(self):
-    #     return self.sigma
-
-    @mass.setter
-    def mass(self, mass):
+    def set_gas_parameters(self, mass, rot_const_a, rot_const_b, rot_const_c, sigma):
         self.mass = mass
+        self.rot_const_a = rot_const_a
+        self.rot_const_b = rot_const_b
+        self.rot_const_c = rot_const_c
+        self.sigma = sigma
+
+    gas_parameters = property(get_gas_parameters, 'gas_parameters property')
 
 
-NH3 = Gas(2.82 * math.pow(10, -26), 610.85, 983.86, 983.91, 3)
+class DesorptionSystem:
+    """"
+    脫附環境
+    system_a_length, system_b_length = surface邊長
+    active_site = 吸附點數量
+    beta = heating rate
+     total_pressure = 反應器壓力
+    """
 
-print(NH3.mass)
+    def __init__(self, system_a_length, system_b_length, active_site, beta, total_pressure):
+        self.system_a_length = system_a_length
+        self.system_b_length = system_b_length
+        self.active_site = active_site
+        self.beta = beta
+        self.total_pressure = total_pressure
+
+    def get_sys_parameter(self):
+        return self.system_a_length, self.system_b_length, self.active_site, self.beta, self.total_pressure
+
+    def set_sys_parameter(self):
+        self.system_a_length = system_a_length
+        self.system_b_length = system_b_length
+        self.active_site = active_site
+        self.beta = beta
+        self.total_pressure = total_pressure
+
+
+class Adsorbent:
+    """
+    
+    """
