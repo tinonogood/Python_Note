@@ -18,6 +18,14 @@ or 以pip安裝
 
 `/usr/local/python3/bin/pip3.5 install scipy`
 
+Window 安裝失敗:
+
+`numpy.distutils.system_info.NotFoundError: no lapack/blas resources found`
+
+![](./img/scipy_anaconda)
+
+將Anaconda導入interpreter
+
 ## Ipython
 
 以pip安裝
