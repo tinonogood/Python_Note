@@ -60,6 +60,38 @@ hvs_12nh3 = [435.391285, 435.126597, 435.071815, 434.242322, 433.264046, 433.235
 hvs_13nh3 = []
 
 
+# Dersoption Energy(eV)
+e_des_1nh3 = 2.559347
+e_des_2nh3 = 2.100317
+e_des_3nh3 = 2.109297
+e_des_4nh3 = 2.030267
+e_des_5nh3 = 1.556527
+e_des_6nh3 = 1.464067
+e_des_7nh3 = 1.557967
+e_des_8nh3 = 1.109317
+e_des_9nh3 = 0.841267
+e_des_10nh3 = 0.836037
+e_des_11nh3 = 0.496997
+e_des_12nh3 = 0.442757
+e_des_13nh3 = 0.352057
+
+
+# #Dersoption Energy(eV)_ZPE
+# e_des_1nh3_ZPE =
+# e_des_2nh3_ZPE =
+# e_des_3nh3_ZPE =
+# e_des_4nh3_ZPE =
+# e_des_5nh3_ZPE =
+# e_des_6nh3_ZPE =
+# e_des_7nh3_ZPE =
+# e_des_8nh3_ZPE =
+# e_des_9nh3_ZPE =
+# e_des_10nh3_ZPE =
+# e_des_11nh3_ZPE =
+# e_des_12nh3_ZPE =
+# e_des_13nh3_ZPE =
+
+
 # variables
 time = 0.00
 temperatures = 100 + BETA * time
@@ -102,12 +134,53 @@ def get_vibration_partition_function_theta_nh3(theta, temperature):
 def get_gas_molecular_partition_function_nh3(temperature):
     t = temperature
     qt = get_translation_partition_function(M_NH3, t, total_pressure)
-    qr = get_rotation_partition_function_nonlinear(SIGMA_NH3, ROT_CONST_A_NH3, ROT_CONST_B_NH3, ROT_CONST_C_NH3)
-    qv = get_vibration_partition_function(hvs_nh3_gas)
-    gas_molecular_partition_functions = [i * j * k for i, j, k in zip(qt, qr, qv)]
-    return gas_molecular_partition_functions
+    qr = get_rotation_partition_function_nonlinear(SIGMA_NH3, t, ROT_CONST_A_NH3, ROT_CONST_B_NH3, ROT_CONST_C_NH3)
+    qv = get_vibration_partition_function(hvs_nh3_gas, t)
+    gas_molecular_partition_function = qt * qr* qv
+    return gas_molecular_partition_function
 
 
+def get_rate_partition_function_term(theta, temperature):
+    t = temperature
+    qa = get_gas_molecular_partition_function_nh3(t)
+    if theta < (1/6):
+        q_star = get_vibration_partition_function_theta_nh3(0, t)
+    else:
+        q_star = get_vibration_partition_function_theta_nh3(theta - 1/6, t)
+    qa_star = get_vibration_partition_function_theta_nh3(theta, t)
+    partition_function_term = qa * q_star / qa_star
+    return partition_function_term
+
+
+def get_desportion_energy(theta):
+    coverage = [1 / 6, 2 / 6, 3 / 6, 4 / 6, 5 / 6, 6 / 6, 7 / 6, 8 / 6, 9 / 6, 10 / 6, 11 / 6, 12 / 6, 13 / 6]
+    e_dess = [e_des_1nh3, e_des_2nh3, e_des_3nh3, e_des_4nh3, e_des_5nh3, e_des_6nh3, e_des_7nh3, e_des_8nh3, e_des_9nh3, e_des_10nh3, e_des_11nh3, e_des_12nh3, e_des_13nh3]
+    f = interpolate.interp1d(coverage, e_dess, kind='cubic')
+    if theta < 1/6:
+        desportion_energy = f(1/6)
+    else:
+        desportion_energy = f(theta)
+    return desportion_energy
+
+
+def get_c_of_active_site_nh3(theta):
+    if theta < 1/6:
+        c_of_active_site = C_OF_ACTIVE_SITE
+    elif 1/6 <= theta < 1:
+        c_of_active_site = C_OF_ACTIVE_SITE * (1 - (theta - 1 / 6))
+    else:
+        c_of_active_site = C_OF_ACTIVE_SITE * 3
+    return c_of_active_site
+
+
+def get_rate_const_adsorption_nh3(temperature, theta):
+    t = temperature
+    rate_const_adsorption = total_pressure / (np.sqrt(2 * np.pi * M_NH3 * KB_J * t) * get_c_of_active_site_nh3(theta))
+    return rate_const_adsorption
+
+print(get_rate_const_adsorption_nh3(400, 0.1), get_rate_const_adsorption_nh3(100, 0.1))
+
+# def get_desportion_rate_nh3(temperature, theta):
 
 
 

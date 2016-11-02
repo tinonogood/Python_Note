@@ -1,0 +1,3 @@
+1. python setup.py install vs ./setup.py install
+
+python setup.py install較佳,因為其安裝之script的shebag型式才會為自定義的`#!/usr/bin/env python`
