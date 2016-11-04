@@ -6,6 +6,8 @@
 from scipy import interpolate
 import numpy as np
 import math
+from scipy import integrate
+
 
 # CONSTANTS
 M_NH3 = (14.001 + 3 * 1.000) * 0.001 / (6 * math.pow(10, 23))  # MASS_OF_NH3, kg
@@ -122,7 +124,12 @@ def get_vibration_partition_function_theta_nh3(theta, temperature):
     coverage = [0, 1/6, 2/6, 3/6, 4/6, 5/6, 6/6, 7/6, 8/6, 9/6, 10/6, 11/6, 12/6, 13/6]
     qvs = [get_vibration_partition_function(hvs_surface, t), get_vibration_partition_function(hvs_1nh3, t), get_vibration_partition_function(hvs_2nh3, t), get_vibration_partition_function(hvs_3nh3, t), get_vibration_partition_function(hvs_4nh3, t), get_vibration_partition_function(hvs_5nh3, t), get_vibration_partition_function(hvs_6nh3, t), get_vibration_partition_function(hvs_7nh3, t), get_vibration_partition_function(hvs_8nh3, t), get_vibration_partition_function(hvs_9nh3, t), get_vibration_partition_function(hvs_10nh3, t), get_vibration_partition_function(hvs_11nh3, t), get_vibration_partition_function(hvs_12nh3, t), get_vibration_partition_function(hvs_13nh3, t)]
     f = interpolate.interp1d(coverage, qvs, kind='cubic')
-    qv = f(theta)
+    if theta < 0:
+        qv = f(0)
+    elif theta > 13/6:
+        qv = f(13/6)
+    else:
+        qv = f(theta)
     return qv
 
 
@@ -153,6 +160,8 @@ def get_desportion_energy(theta):
     f = interpolate.interp1d(coverage, e_dess, kind='cubic')
     if theta < 1/6:
         desportion_energy = f(1/6)
+    elif theta > 13/6:
+        desportion_energy = f(13/6)
     else:
         desportion_energy = f(theta)
     return desportion_energy
@@ -161,7 +170,7 @@ def get_desportion_energy(theta):
 def get_c_of_active_site_nh3(theta):
     if theta < 1/6:
         c_of_active_site = C_OF_ACTIVE_SITE
-    elif 1/6 <= theta < 1:
+    elif 1/6 <= theta <= 1:
         c_of_active_site = C_OF_ACTIVE_SITE * (1 - (theta - 1 / 6))
     else:
         c_of_active_site = C_OF_ACTIVE_SITE * 3
@@ -177,8 +186,6 @@ def get_rate_const_adsorption_nh3(temperature, theta):
 def get_v(temperature, theta):
     v = get_rate_partition_function_term(temperature, theta) * get_rate_const_adsorption_nh3(temperature, theta)
     return v
-print(get_v(400, 1/3))
-print(get_v(400, 1))
 
 
 def get_desorption_rate(temperature, theta):
@@ -190,18 +197,51 @@ def get_desorption_rate(temperature, theta):
     return desorption_rate
 
 
+# detail
 def get_spectra(temperature, theta):
-    # beta = 3K/s, scan_step = 1/3sec
+    # beta = 3K/s, scan_step = 1/1500sec
     t = temperature
     ts = []
     thetas = []
     desorption_rates = []
     while True:
-        desorption_rates.append(get_desorption_rate(t, theta))
-        ts.append(t+1)
-        thetas.append(theta - get_desorption_rate(t, theta) * (1/3))
-        t = t + 1
-        theta = theta - get_desorption_rate(t, theta) * (1 / 3)
-        if t > 500.0:
+        print('%6f' % t, '%6f' % theta, '%8f' % get_desorption_rate(t, theta))
+        theta = theta + get_desorption_rate(t, theta) * (1 / 1500)
+        t = t + 0.002
+        if t > 700.0:
             break
-    return ts, thetas, desorption_rates
+
+
+# # medium
+# def get_spectra(temperature, theta):
+#     # beta = 3K/s, scan_step = 1/60sec
+#     t = temperature
+#     while True:
+#         # print(t, theta, get_desorption_rate(t, theta))
+#         # print(round(t, 4), round(theta, 6), round(get_desorption_rate(t, theta), 6))
+#         print('%6f' % t, '%6f' % theta, '%8f' % get_desorption_rate(t, theta))
+#         theta = theta + get_desorption_rate(t, theta) * (1 / 60)
+#         t = t + 0.05
+#         if t > 700.0:
+#             break
+
+
+# # rough
+# def get_spectra(temperature, theta):
+#     # beta = 3K/s, scan_step = 1/3sec
+#     t = temperature
+#     # ts = []
+#     # thetas = []
+#     # desorption_rates = []
+#     while True:
+#         # desorption_rates.append(get_desorption_rate(t, theta))
+#         # ts.append(t+1)
+#         # thetas.append(theta + get_desorption_rate(t, theta) * (1/3))
+#         # print(t, theta, get_desorption_rate(t, theta))
+#         print('%6f' % t, '%6f' % theta, '%8f' % get_desorption_rate(t, theta))
+#         theta = theta + get_desorption_rate(t, theta) * (1 / 3)
+#         t = t + 1
+#         if t > 700.0:
+#             break
+
+get_spectra(100., 0.1)
