@@ -152,6 +152,7 @@ def get_rate_partition_function_term(temperature, theta):
     qa_star = get_vibration_partition_function_theta_nh3(theta, t)
     partition_function_term = qa * q_star / qa_star
     return partition_function_term
+print(get_rate_partition_function_term(240, 2))
 
 
 def get_desportion_energy(theta):
@@ -197,20 +198,37 @@ def get_desorption_rate(temperature, theta):
     return desorption_rate
 
 
-# detail
-def get_spectra(temperature, theta):
-    # beta = 3K/s, scan_step = 1/1500sec
-    t = temperature
-    ts = []
-    thetas = []
-    desorption_rates = []
-    while True:
-        print('%6f' % t, '%6f' % theta, '%8f' % get_desorption_rate(t, theta))
-        theta = theta + get_desorption_rate(t, theta) * (1 / 1500)
-        t = t + 0.002
-        if t > 700.0:
-            break
 
+# # detail
+# def get_spectra(temperature, theta):
+#     # beta = 3K/s, scan_step = 1/1500sec
+#     t = temperature
+#     while True:
+#         print('%8f' % t + " " + '%8f' % theta + " * " + '%8f' % get_desorption_rate(t, theta))
+#         dthetadt_1 = get_desorption_rate(t, theta)
+#         theta = theta + get_desorption_rate(t, theta) * (1 / 1500)
+#         t = t + 0.002
+#         dthetadt_2 = get_desorption_rate(t, theta)
+#         if -0.05 < (dthetadt_1 - dthetadt_2) / (1/1500) < 0.01:
+#             t = t + 1
+#             theta = theta + get_desorption_rate(t, theta) * (1 / 3)
+#         if t > 800.0:
+#             break
+
+def get_spectra(temperature, theta):
+    # beta = 3K/s, scan_step = 1/2400sec
+    t = temperature
+    while True:
+        print('%8f' % t + " " + '%8f' % theta + " -- " + '%8f' % get_desorption_rate(t, theta))
+        dthetadt_1 = get_desorption_rate(t, theta)
+        theta = theta + get_desorption_rate(t, theta) * (1 / 2400)
+        t = t + 0.00125
+        dthetadt_2 = get_desorption_rate(t, theta)
+        if -0.005 < (dthetadt_1 - dthetadt_2) / (1 / 2400) < 0.005:
+            t = t + 1
+            theta = theta + get_desorption_rate(t, theta) * (1 / 3)
+        if t > 800.0:
+            break
 
 # # medium
 # def get_spectra(temperature, theta):
@@ -244,4 +262,3 @@ def get_spectra(temperature, theta):
 #         if t > 700.0:
 #             break
 
-get_spectra(100., 0.1)
