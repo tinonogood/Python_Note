@@ -1,6 +1,9 @@
-# python3.5 install -ubuntu
+- python3.5 install -ubuntu
 
-sudo apt-get install python3-all
+sudo apt-get install python3-all # 安裝python3.5
 
-sudo apt-get install idle-python3.5 # 安裝python3.5與idle
+- Anaconda
 
+follow official web: https://www.continuum.io/downloads#linux
+
+$Anaconda_HOME/bin/spyder # ide for Anaconda
