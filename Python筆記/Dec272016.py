@@ -22,7 +22,8 @@ def tailrecSum(x, sum=0): #尾遞迴,減少記憶體調用
     else:
         return tailrecSum(x-1, sum + x)
   
-  
+
+
 class First(object):
     def say(self):
         print("from First")
@@ -35,7 +36,7 @@ class Third(object):
     def say(self):
         print("from Third")
 
-class Son(First, Second, Third):
+class Son(First, Second, Third): ＃繼承First,Second,Third super()指的是 MRO 中的下一個，而不是父類
     def say(self): 
         #super().say() # from First (same as super(Son, self).say())
 #        super(First, self).say() # from Second
