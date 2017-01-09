@@ -25,5 +25,8 @@ try:
 except:
    print ("Error: unable to start thread")
 
-#while 1:
+#while 1:    #無法中斷程式
 #   pass
+
+while 0:    #離開程式,thread繼續
+    pass
