@@ -8,8 +8,10 @@ Created on Tue Jan 10 06:44:06 2017
 #!/usr/bin/python
 
 import threading
+#import time
 
 random = 7
+answers = [] 
 
 class myThread (threading.Thread):
     def __init__(self, threadID, name, x, ans, random):
@@ -21,10 +23,12 @@ class myThread (threading.Thread):
         self.random = random
     def run(self):
         print("Starting " + self.name)
+#        time.sleep(1)
         threadLock.acquire()
 #        print(tailrecSum(self.x, self.random))
         self.ans = tailrecSum(self.x, self.random)
         print(self.ans)
+        answers.append(self.ans)
         threadLock.release()
         
 def tailrecSum(x, random, sum=0):
@@ -37,16 +41,17 @@ def tailrecSum(x, random, sum=0):
 #print(tailrecSum(0, random))
         
 threadLock = threading.Lock()
-threads = []
-answers = []    
+threads = []   
     
-def creatThread(random):
-    for i in range(1,random+1):
+def creatThread(random):    
+    for i in range(0,random):
+#    for i in range(1,random+1):
         i = myThread(i, "Thread-" + str(i) , i, 0 , random)
         i.start()
 #        print(i.ans)
         threads.append(i)
-        answers.append(i.ans)
+#        time.sleep(1/3600)
+#        answers.append(i.ans)
     
 creatThread(random)
 
