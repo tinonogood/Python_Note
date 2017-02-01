@@ -1,3 +1,7 @@
+FLASK NOTE
+
+# Installation:
+
 利用conda創虛擬環境
 
 $ conda create -n InteractiveWeb_flask python=3.5
