@@ -1,0 +1,11 @@
+Goal:
+    以flask POST,GET 完成簡易登入頁面(login page)
+
+Note:
+    利用route()裝飾器改變url行為,methods = [POST, GET]
+
+    redirect(url_for('target_page'))換頁
+
+    request.form['欲傳送至url資料']; request.args.get("提取資料")
+
+    render_template: 於templates資料夾呼叫模板
