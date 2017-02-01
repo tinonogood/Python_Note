@@ -8,8 +8,8 @@ def hello_world():
     return render_template("login.html")
 def login():
     if request.method == 'POST':
-      user = request.form['name']
-      return redirect(url_for('hiuser',name = user))
+        user = request.form['name']
+        return redirect(url_for('hiuser',name = user))
 
 @app.route('/hiuser', methods =["GET"])
 def hiuser():
