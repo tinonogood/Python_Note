@@ -1,6 +1,6 @@
-FLASK NOTE
+# FLASK NOTE
 
-# Installation:
+Installation:
 
 利用conda創虛擬環境
 
@@ -16,14 +16,15 @@ $ conda install -n InteractiveWeb_flask flask
 
 $ flask: 顯示幫助文件
 
-$ vim hello.py`
+$ vim hello.py
 
 `from flask import Flask    
 app = Flask(__name__) 
 
 @app.route('/')      
 def hello_world():
-    return 'Hello World'`
+    return 'Hello World'
+    `
 
 $ export FLASK_APP=hello.py
 
