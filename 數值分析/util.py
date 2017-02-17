@@ -6,6 +6,8 @@
 
 import math
 import numpy as np
+import scipy.integrate as integrate
+from sympy import solve, Symbol, exp
 
 # CONSTANTS
 KB_J = 1.38064852 * math.pow(10, -23)  # K_BOLTZMANN_J, J/K
@@ -127,8 +129,7 @@ class Adsorbent(Gas):
         return rate_const_adsorption
         
     def get_adsorbent_vibration_partition_function(self, hvs):
-        partition_function = [1.0 / (1.0 - math.exp(-1 * hv * math.pow(10, -3) / (KB_EV * self.temperature))) for
-                              hv in hvs]
+        partition_function = [1.0 / (1.0 - math.exp(-1 * hv * math.pow(10, -3) / (KB_EV * self.temperature))) for hv in hvs]
         qvs = np.prod(partition_function)
         return qvs
         
@@ -142,13 +143,50 @@ class Adsorbent(Gas):
     def get_v(self):
         v = self.get_rate_partition_function_term() * self.get_rate_const_adsorption()
         return v
+        
+#==============================================================================
+#       P.J.Barrie, Phys. Chem. Chem. Phys., 2008, 10, 1688-96            
+#==============================================================================
 
-    def get_energy_distribution(self, E):
+    def get_theta_distribution(self, E):
+        A = self.get_v()
+        theta = math.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * math.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature)))
+        return theta
+
+    def get_f_energy_distribution(self, E):
         A = self.get_v()
         theta = math.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * math.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature)))
         f = A * math.exp(-1 * E / (KB_EV * self.temperature)) * theta
         return f
-                
+        
+    def get_E_star(self):
+        x = Symbol('x', positive=True) # x = E_star / RT - 0.368
+        A = self.get_v()
+        t = self.temperature
+        [c] = solve(x * exp(x) - (A * t) / self.beta, x)
+        E_star = (c + 0.368) * KB_EV * self.temperature 
+        return E_star
+        
+    def get_T(self, E):
+        v = []
+        q = []
+        k = []
+        for T in range(100,1000,100):
+            self.temperature = T
+            q.append(self.get_rate_partition_function_term())
+            k.append(self.get_rate_const_adsorption())
+            v.append(self.get_v())
+        return v,q,k
+            
+
+#    def get_rate_of_T(self):
+#        rd = integrate.quad(lambda E: self.get_f_energy_distribution(E) * self.get_n0_of_E(), 0, inf)
+#        return rd
+        
+#    def get_n0_of_E():
+#        n0 = self.get_f_energy_distribution(E) / ( self. )                
     
+#    def get_eq25_righthand():
+        
 if __name__ == "__main__":
     pass
