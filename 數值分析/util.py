@@ -55,29 +55,50 @@ class Gas(DesorptionSystem):
     """
 
     def __init__(self, mass, rot_const_a, rot_const_b, rot_const_c, symmetry_factor, hvs):
+        if mass > math.pow(10, -24) or mass < 1.6 * math.pow(10, -27):
+            print("mass unit is kg?")
+        if rot_const_a > 1000 or rot_const_a < 1:
+            print("mass unit is 1/m?")
+        if rot_const_b > 1000 or rot_const_b < 1:
+            print("mass unit is 1/m?")
+        if rot_const_c > 1000 or rot_const_c < 1:
+            print("mass unit is 1/m?")
         self.mass = mass
         self.rot_const_a = rot_const_a
         self.rot_const_b = rot_const_b
         self.rot_const_c = rot_const_c
         self.symmetry_factor = symmetry_factor
+        for hv in hvs:
+            if hvs > 10000 or hvs < 1:
+                print("hv unit is meV?")
         self.hvs = hvs
 
     def get_gas_parameters(self):
         return self.mass, self.rot_const_a, self.rot_const_b, self.rot_const_c, self.symmetry_factor, self.hvs
 
     def set_gas_parameters(self, mass, rot_const_a, rot_const_b, rot_const_c, symmetry_factor, hvs):
+        if mass > math.pow(10, -24) or mass < 1.6 * math.pow(10, -27):
+            print("mass unit is kg?")
+        if rot_const_a > 1000 or rot_const_a < 1:
+            print("mass unit is 1/m?")
+        if rot_const_b > 1000 or rot_const_b < 1:
+            print("mass unit is 1/m?")
+        if rot_const_c > 1000 or rot_const_c < 1:
+            print("mass unit is 1/m?")
         self.mass = mass
         self.rot_const_a = rot_const_a
         self.rot_const_b = rot_const_b
         self.rot_const_c = rot_const_c
         self.symmetry_factor = symmetry_factor
+        for hv in hvs:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
         self.hvs = hvs
 
 
     gas_parameters = property(get_gas_parameters, 'gas_parameters property')
 
     def get_translation_partition_function(self):
-#        volume = KB_J * temperature / pressure
         volume = KB_J * self.temperature / self.total_pressure
         Lambda = np.sqrt((H_J ** 2) / (2 * np.pi * self.mass * KB_J * self.temperature))
         qt = volume / (Lambda ** 3)
@@ -109,18 +130,32 @@ class Adsorbent(Gas):
     desorption_energy = 脫付能
     """
     def __init__(self, hv_surface, hv_adsorbent): #, adsorbent):
+        for hv in hv_surface:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
         self.hv_surface = hv_surface
+        for hv in hv_adsorbent:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
         self.hv_adsorbent = hv_adsorbent
 #        self.desorption_energy = desorption_energy
+        self.E_T_dict = {}
         
     
     def get_adsorbent_parameters(self):
-        return self.hv_surface, self.hv_adsorbent, self.desorption_energy
+        return self.hv_surface, self.hv_adsorbent, self.desorption_energy, self.E_T_dict
         
-    def set_adsorbent_parameters(self, hv_surface, hv_adsorbent):#, desorption_energy):
+    def set_adsorbent_parameters(self, hv_surface, hv_adsorbent, E_T_dict):#, desorption_energy):
+        for hv in hv_surface:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
         self.hv_surface = hv_surface
+        for hv in hv_adsorbent:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
         self.hv_adsorbent = hv_adsorbent
 #        self.desorption_energy = desorption_energy
+        self.E_T_dict = {}
     
     adsorbent_parameters = property(get_adsorbent_parameters, 'gas_parameters property')
     
@@ -167,17 +202,26 @@ class Adsorbent(Gas):
         E_star = (c + 0.368) * KB_EV * self.temperature 
         return E_star
         
-    def get_T(self, E):
-        v = []
-        q = []
-        k = []
-        for T in range(100,1000,100):
-            self.temperature = T
-            q.append(self.get_rate_partition_function_term())
-            k.append(self.get_rate_const_adsorption())
-            v.append(self.get_v())
-        return v,q,k
+    def get_E_T_dict(self):
+        self.temperature = 20
+        E = 0
+        E_list = []
+        t_list = []
+        while self.temperature < 1500:
+            E_star = self.get_E_star()
+            if E_star - E > 0.5:
+                E_list.append(round(Ｅ_star, 3)) # 回傳小數三位
+                t_list.append(self.temperature)
+                E_star = E
+            self.temperature += 20
+#        return E_list
+        E_T_dict = dict(zip(E_list,t_list))
+        self.E_T_dict = E_T_dict
+        return self.E_T_dict
             
+    def get_T(self, E):
+        T = self.E_T_dict[E]
+        return T
 
 #    def get_rate_of_T(self):
 #        rd = integrate.quad(lambda E: self.get_f_energy_distribution(E) * self.get_n0_of_E(), 0, inf)

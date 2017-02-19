@@ -15,23 +15,23 @@ import matplotlib.pyplot as plt
 #==============================================================================
 # PARAMETERS OF SYS
 
-LATTICE_A = 9.49569 * math.pow(10, -10)
-LATTICE_B = 9.49569 * math.pow(10, -10)
-ACTIVE_SITE = 6 / (LATTICE_A * LATTICE_B)
-BETA = 3
-TOTAL_PRESSURE = 2 * math.pow(10, -10)
-TEMPERATURE = 500
+LATTICE_A = 9.49569 * math.pow(10, -10) # m
+LATTICE_B = 9.49569 * math.pow(10, -10) # m
+ACTIVE_SITE = 6 / (LATTICE_A * LATTICE_B) 
+BETA = 3 # K/sec
+TOTAL_PRESSURE = 2 * math.pow(10, -10) # atm
+TEMPERATURE = 500 # K
 #==============================================================================
     
 #==============================================================================
 # PARAMETER OF NH3
 
-GAS_MASS = 14.001
-ROT_CONST_A = 610.85
-ROT_CONST_B = 983.86
-ROT_CONST_C = 983.91
+GAS_MASS = 17.001 / (6 * math.pow(10, 23) * 1000) # kg /atom
+ROT_CONST_A = 610.85 # 1/m
+ROT_CONST_B = 983.86 # 1/m
+ROT_CONST_C = 983.91 # 1/m
 SIGMA = 3
-HVS_GAS = [435.460659, 431.205986, 415.541526, 203.517923, 201.833141, 120.027150]
+HVS_GAS = [435.460659, 431.205986, 415.541526, 203.517923, 201.833141, 120.027150] # meV
 #==============================================================================
 
 #==============================================================================
@@ -45,17 +45,31 @@ ADSORBENT = [3497.8656, 3470.6895, 3357.7690, 1612.5701, 1600.9326, 1183.3037, 7
 
 H_eV = 4.135667662 * math.pow(10, -15)  # H_PLANCK_eV, eV.sec
 C = 299792458  # speed of light m/s
-HVS_SURFACE = [H_eV * C * (i * 100) for i in SURFACE]
-HVS_ADSORBENT = [H_eV * C * (i * 100) for i in ADSORBENT]
+HVS_SURFACE = [H_eV * C * (i * 100) * 1000 for i in SURFACE] # convert to meV
+HVS_ADSORBENT = [H_eV * C * (i * 100)* 1000 for i in ADSORBENT]
 
 adsorbent = util.Adsorbent(HVS_SURFACE, HVS_ADSORBENT)
 adsorbent.set_sys_parameter(LATTICE_A, LATTICE_B, ACTIVE_SITE, BETA, TOTAL_PRESSURE, TEMPERATURE)
 adsorbent.set_gas_parameters(GAS_MASS, ROT_CONST_A, ROT_CONST_B, ROT_CONST_C, SIGMA, HVS_GAS)
 
 
+#t = []
+#E = []
+#for adsorbent.temperature in np.linspace(0.02, 1, 40, endpoint=True):
+#    t.append(adsorbent.temperature)
+#    E.append(adsorbent.get_E_star())
+#print(E)
+#plt.plot(t, E)
+
+adsorbent.temperature = 500
+#print(adsorbent.get_translation_partition_function())
+#print(adsorbent.get_rotation_partition_function_nonlinear())
+#print(adsorbent.get_vibration_partition_function())
+print(adsorbent.get_E_T_dict())
+#print(adsorbent.get_T('1.8314'))
+
 #print(HVS_ADSORBENT)
-print(adsorbent.get_v())
-print(adsorbent.get_T(2.6))
+#print(HVS_SURFACE)
 
 #bins = np.linspace(1.3, 2, 100, endpoint=True)
 #mu, sigma = 1.56, 0.1
