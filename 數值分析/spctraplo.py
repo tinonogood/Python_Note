@@ -5,11 +5,17 @@ Created on Mon Jan 16 17:57:40 2017
 
 @author: tino
 """        
+import time
+start_time = time.time()
+
 
 import math
 import util
 import numpy as np
 import matplotlib.pyplot as plt
+import threading
+threadLock = threading.Lock()
+dict_E_T_Threads = [] 
 
 
 #==============================================================================
@@ -65,7 +71,7 @@ adsorbent.temperature = 500
 #print(adsorbent.get_translation_partition_function())
 #print(adsorbent.get_rotation_partition_function_nonlinear())
 #print(adsorbent.get_vibration_partition_function())
-print(adsorbent.get_E_T_dict())
+#print(adsorbent.get_E_t_dict())
 #print(adsorbent.get_T('1.8314'))
 
 #print(HVS_ADSORBENT)
@@ -77,6 +83,46 @@ print(adsorbent.get_E_T_dict())
 ##plt.show()
 #
 #print(bins)
+
+def get_E_t_dict_sect(start_t, end_t):
+    E = 0
+    while start_t < end_t:
+        adsorbent.temperature = start_t
+        E_star = adsorbent.get_E_star()
+        if E_star - E > 0.001:
+            adsorbent.E_list.append(round(Ｅ_star, 4)) # 回傳小數四位
+            adsorbent.t_list.append(adsorbent.temperature)
+            E_star = E
+        start_t += 0.5
+    return 
+    
+class dict_E_t_Thread(threading.Thread):
+    def __init__(self, threadID, start_t, end_t):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.start_t = start_t
+        self.end_t = end_t
+    def run(self):
+#        threadLock.acquire()
+        get_E_t_dict_sect(self.start_t, self.end_t)
+#        threadLock.release()
+        
+def get_E_t_dict():
+    for i in range(0, 4):
+        start_t = 100 + 50 * i
+        end_t = 100 + 50 * (i + 1)
+        i = dict_E_t_Thread(i, start_t, end_t)
+        i.run()
+        dict_E_T_Threads.append(i)
+    
+    return adsorbent.E_list
+    
+for t in dict_E_T_Threads:
+    t.join()
+    
+print(get_E_t_dict())
+
+print("--- %s seconds ---" % (time.time() - start_time))
 
 
 
