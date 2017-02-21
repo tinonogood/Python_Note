@@ -138,16 +138,13 @@ class Adsorbent(Gas):
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
         self.hv_adsorbent = hv_adsorbent
-#        self.desorption_energy = desorption_energy
-        self.E_list = []
-        self.t_list = []
-        self.E_T_dict = {}
+        self.E_T_list = []
         
     
     def get_adsorbent_parameters(self):
-        return self.hv_surface, self.hv_adsorbent, self.desorption_energy, self.E_list, self.t_list, self.E_T_dict
+        return self.hv_surface, self.hv_adsorbent, self.desorption_energy, self.E_T_list
         
-    def set_adsorbent_parameters(self, hv_surface, hv_adsorbent, E_list, t_list, E_T_dict):#, desorption_energy):
+    def set_adsorbent_parameters(self, hv_surface, hv_adsorbent, E_T_list):#, desorption_energy):
         for hv in hv_surface:
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
@@ -156,10 +153,7 @@ class Adsorbent(Gas):
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
         self.hv_adsorbent = hv_adsorbent
-#        self.desorption_energy = desorption_energy
-        self.E_list = E_list
-        self.t_list = t_list
-        self.E_T_dict = E_T_dict
+        self.E_T_list = E_T_list
     
     adsorbent_parameters = property(get_adsorbent_parameters, 'gas_parameters property')
     
@@ -206,58 +200,43 @@ class Adsorbent(Gas):
         E_star = (c + 0.368) * KB_EV * self.temperature 
         return E_star
         
-#    def get_E_t_dict_sect(self, start_t, end_t):
-#        E = 0
-#        while start_t < end_t:
-#            self.temperature = start_t
-#            E_star = self.get_E_star()
-#            if E_star - E > 0.001:
-#                self.E_list.append(round(Ｅ_star, 4)) # 回傳小數四位
-#                self.t_list.append(self.temperature)
-#                E_star = E
-#            start_t += .1
-#        return 
-##        return E_list
-##        E_T_dict = dict(zip(E_list,t_list))
-##        self.E_T_dict = E_T_dict
-##        return self.E_T_dict
-#            
-#    class dict_E_t_Thread(threading.Thread):
-#        def __init__(self, threadID, start_t, end_t):
-#            threading.Thread.__init__(self)
-#            self.threadID = threadID
-#            self.start_t = start_t
-#            self.end_T = end_t
-#        def run(self):
-#            threadLock.acquire()
-#            self.get_E_t_dict_sect(self.start_t, self.end_t)
-#            threadLock.release()
-#            
-#    def get_E_t_dict(self):
-#        for i in range(0, 3):
-#            start_t = 100 + 25 * i
-#            end_t = 100 + 25 * (i + 1)
-#            i = self.dict_E_t_Thread(i, start_t, end_t)
-#            i.start()
-#            dict_E_T_Threads.append(i)
-#        return
+    # 精細度待處理
+    def get_E_t_list(self):
+        self.temperature = 60
+        E = 0
+        E_list = []
+        t_list = []
+        while self.temperature < 1500:
+            E_star = self.get_E_star()
+            if E_star - E > 0.01:
+                E_list.append(round(E_star, 4)) # 回傳小數四位
+                t_list.append(self.temperature)
+                E_star = E
+            self.temperature += 40
+        E_T_dict = dict(zip(E_list,t_list))
+#        self.E_T_dict = E_T_dict
+        self.E_T_list = [(k, E_T_dict[k]) for k in sorted(E_T_dict.keys())]
+        return self.E_T_list
             
             
     def get_T(self, E):
-        T = self.E_T_dict[E]
-        return T
-
-#    def get_rate_of_T(self):
-#        rd = integrate.quad(lambda E: self.get_f_energy_distribution(E) * self.get_n0_of_E(), 0, inf)
-#        return rd
-        
-#    def get_n0_of_E():
-#        n0 = self.get_f_energy_distribution(E) / ( self. )                
-    
-#    def get_eq25_righthand():
-    
-#class dict_E_T_Thread(threading.Thread):
-    
+        for i in range(len(self.E_T_list) - 1):
+            (x,y) = self.E_T_list[i]
+            if x >= E:
+                if i == 0:
+                    (x_plus, y_plus) = self.E_T_list[i+1]
+                    T = y - (y_plus - y) / (x_plus - x) * (x - E)
+                    return round(T, 4)
+                else:
+                    (x_mi, y_mi) = self.E_T_list[i-1]
+                    T =  y - (y - y_mi) / (x - x_mi) * (x - E)
+                    return round(T, 4)
+        i_max = len(self.E_T_list) - 1
+        (x,y) = self.E_T_list[i_max]
+        if x < E:
+            (x_mi, y_mi) = self.E_T_list[i-1]
+            T =  y - (y - y_mi) / (x - x_mi) * (x - E)
+            return round(T, 4)
     
         
 if __name__ == "__main__":
