@@ -109,7 +109,7 @@ class Gas(DesorptionSystem):
         return qr_nonlinear
         
     def get_vibration_partition_function(self):
-        partition_function = [1.0 / (1.0 - math.exp(-1 * hv * math.pow(10, -3) / (KB_EV * self.temperature))) for
+        partition_function = [1.0 / (1.0 - np.exp(-1 * hv * math.pow(10, -3) / (KB_EV * self.temperature))) for
                               hv in self.hvs]
         qvs = np.prod(partition_function)
         return qvs
@@ -162,7 +162,7 @@ class Adsorbent(Gas):
         return rate_const_adsorption
         
     def get_adsorbent_vibration_partition_function(self, hvs):
-        partition_function = [1.0 / (1.0 - math.exp(-1 * hv * math.pow(10, -3) / (KB_EV * self.temperature))) for hv in hvs]
+        partition_function = [1.0 / (1.0 - np.exp(-1 * hv * math.pow(10, -3) / (KB_EV * self.temperature))) for hv in hvs]
         qvs = np.prod(partition_function)
         return qvs
         
@@ -183,13 +183,14 @@ class Adsorbent(Gas):
 
     def get_theta_distribution(self, E):
         A = self.get_v()
-        theta = math.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * math.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature)))
+        theta = np.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * np.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature)))
         return theta
 
     def get_f_energy_distribution(self, E):
         A = self.get_v()
-        theta = math.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * math.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature)))
-        f = A * math.exp(-1 * E / (KB_EV * self.temperature)) * theta
+        theta = np.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * np.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature / E)))
+#        theta = float(math.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * math.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature))))
+        f = A * np.exp(-1 * E / (KB_EV * self.temperature)) * theta
         return f
         
     def get_E_star(self):
@@ -237,6 +238,8 @@ class Adsorbent(Gas):
             (x_mi, y_mi) = self.E_T_list[i-1]
             T =  y - (y - y_mi) / (x - x_mi) * (x - E)
             return round(T, 4)
+            
+    
     
         
 if __name__ == "__main__":
