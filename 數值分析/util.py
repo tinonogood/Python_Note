@@ -57,12 +57,12 @@ class Gas(DesorptionSystem):
     def __init__(self, mass, rot_const_a, rot_const_b, rot_const_c, symmetry_factor, hvs):
         if mass > math.pow(10, -24) or mass < 1.6 * math.pow(10, -27):
             print("mass unit is kg?")
-        if rot_const_a > 1000 or rot_const_a < 1:
-            print("mass unit is 1/m?")
-        if rot_const_b > 1000 or rot_const_b < 1:
-            print("mass unit is 1/m?")
-        if rot_const_c > 1000 or rot_const_c < 1:
-            print("mass unit is 1/m?")
+        if rot_const_a > 5000 or rot_const_a < 1:
+            print("rot_const_a unit is 1/m?")
+        if rot_const_b > 5000 or rot_const_b < 1:
+            print("rot_const_b unit is 1/m?")
+        if rot_const_c > 5000 or rot_const_c < 1:
+            print("rot_const_c unit is 1/m?")
         self.mass = mass
         self.rot_const_a = rot_const_a
         self.rot_const_b = rot_const_b
@@ -79,12 +79,12 @@ class Gas(DesorptionSystem):
     def set_gas_parameters(self, mass, rot_const_a, rot_const_b, rot_const_c, symmetry_factor, hvs):
         if mass > math.pow(10, -24) or mass < 1.6 * math.pow(10, -27):
             print("mass unit is kg?")
-        if rot_const_a > 1000 or rot_const_a < 1:
-            print("mass unit is 1/m?")
-        if rot_const_b > 1000 or rot_const_b < 1:
-            print("mass unit is 1/m?")
-        if rot_const_c > 1000 or rot_const_c < 1:
-            print("mass unit is 1/m?")
+        if rot_const_a > 5000 or rot_const_a < 1:
+            print("rot_const_a unit is 1/m?")
+        if rot_const_b > 5000 or rot_const_b < 1:
+            print("rot_const_b unit is 1/m?")
+        if rot_const_c > 5000 or rot_const_c < 1:
+            print("rot_const_c unit is 1/m?")
         self.mass = mass
         self.rot_const_a = rot_const_a
         self.rot_const_b = rot_const_b
