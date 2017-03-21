@@ -9,3 +9,32 @@ Note:
     request.form['欲傳送至url資料']; request.args.get("提取資料")
 
     render_template: 於templates資料夾呼叫模板
+
+
+Dockrized:
+
+    安裝docker
+    
+    `#zypper in docker`
+    
+    `#systemctl start docker` #開啟
+    
+    `#systemctl enable docker` #開機自啟
+    
+    `#docker images` #查看docker images
+    
+    `#docker rmi image-id`
+    
+    `#docker ps -a` #查看process
+    
+    `#docker rm process-id`
+    
+    edit Dockerfile
+    
+    `#docker build -t hiuser .`
+    
+Use by Docker
+    
+    `#docker run -d -p 5000:5000 hiuser`
+    
+    
