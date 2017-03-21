@@ -16,3 +16,6 @@ def hiuser():
     if request.method == 'GET':
         name = request.args.get("name", "Error")
         return render_template("hiuser.html", name = name)
+
+if __name__ == '__main__':
+    app.run(debug=True,host='0.0.0.0')
