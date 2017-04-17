@@ -7,15 +7,8 @@ manager = Manager(app)
 
 @app.route('/')
 def hello():
-    return(str("hello"))
+    return render_template("base2.html")
 
-@app.route('/<name>')
-def hello_name(name, age=0):
-    return render_template("hiuser.html", name=name, age=age)
-
-@app.route('/<name> + <age>')
-def hello_world(name, age):
-    return render_template("hiuser.html", name=name, age=age)
 
 if __name__ == '__main__':
 #    manager.run(debug=True,host='0.0.0.0')
