@@ -1,26 +1,34 @@
 <!doctype html>
 <html>
-	<body>
+	<body>	
+		<form action = "{{ url_for('addmember') }}" method = "POST">
+			<h3>ADD</h3></br>
+			Name
+			<input type = "text" name="nm" />
+			Project
+			<input type = "text" name="pj" /></br>
+			<input type = "submit" value = "submit" /><br>
+		</form>
+
+		<form action = "{{ url_for('delmember') }}" method = "POST">
+			<h3>DEL</h3>
+			Project
+			<input type = "text" name="pj" /></br>
+			<input type = "submit" value = "DEL" /><br>
+		</form>
+
 		<table border = 1>
 			<thead>
 				<td>Name</td>
-				<td>ID</td>
+				<td>Project</td>
 			</thead>
 
 			{% for row in rows %}
 			<tr>
 				<td>{{row["name"]}}</td>
-				<td>{{row["id"]}}</td>
+				<td>{{row["project"]}}</td>
 			</tr>
 			{% endfor %}
 		</table>
-	
-		<form action = "{{ url_for('addmember') }}" method = "POST">
-			Name
-			<input type = "text" name="nm" /></br>
-			ID
-			<input type = "text" name="nu" /></br>
-			<input type = "submit" value = "submit" /><br>
-		</form>
 	</body>
 </html>
