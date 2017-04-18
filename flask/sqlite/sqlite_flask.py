@@ -43,7 +43,7 @@ def delmember():
 			pj = request.form['pj']
 			con = sql.connect('database.db')
 			cur = con.cursor()
-			cur.execute("DELETE FROM members WHERE project = ?", pj)
+			cur.execute("DELETE FROM members WHERE project =(?)", (pj,)) #make parameter a tuple
 			con.commit()
 			msg_del = "Delete Successfully"
 		except:
@@ -53,6 +53,16 @@ def delmember():
 		finally:
 			return render_template("result.html", msg = msg_del)
 
+@app.route('/srchmember', methods= ['POST', 'GET'])
+def srchmember():
+	if request.method == 'POST':
+		pj = request.form['pj']
+		con = sql.connect('database.db')
+		con.row_factory = sql.Row
+		cur = con.cursor()
+		cur.execute("SELECT * FROM members WHERE project=(?)", (pj,))
+		rows_pj = cur.fetchall()
+		return render_template('mbsrch.html', rows_pj = rows_pj)
 
 if __name__=='__main__':
 	app.run(debug = True) 
