@@ -6,14 +6,12 @@
 
 import math
 import numpy as np
-import scipy.integrate as integrate
 from sympy import solve, Symbol, exp
+from scipy import constants as C
 
 # CONSTANTS
-KB_J = 1.38064852 * math.pow(10, -23)  # K_BOLTZMANN_J, J/K
-KB_EV = 8.6173324 * math.pow(10, -5)  # K_BOLTZMANN_EV. eV/K
-H_J = 6.626070040 * math.pow(10, -34)  # H_PLANCK_J, J.sec
-C = 299792458  # speed of light m/s
+KB_EV = C.k * C.physical_constants["joule-electron volt relationship"][0]
+
 
 class DesorptionSystem:
     """"
@@ -29,21 +27,23 @@ class DesorptionSystem:
         self.system_a_length = system_a_length
         self.system_b_length = system_b_length
         self.active_site = active_site
-        self.beta = beta
         self.total_pressure = total_pressure
+        self.beta = beta
         self.temperature = temperature
         pass
 
-    def get_sys_parameter(self):
-        return self.system_a_length, self.system_b_length, self.active_site, self.beta, self.total_pressure
+    def get_sys_parameters(self):
+        return self.system_a_length, self.system_b_length, self.active_site, self.beta, self.total_pressure, self.total_pressure
 
-    def set_sys_parameter(self, system_a_length, system_b_length, active_site, beta, total_pressure, temperature):
+    def set_sys_parameters(self, system_a_length, system_b_length, active_site, beta, total_pressure, temperature):
         self.system_a_length = system_a_length
         self.system_b_length = system_b_length
         self.active_site = active_site
         self.beta = beta
         self.total_pressure = total_pressure
         self.temperature = temperature
+        
+    sys_parameters = property(get_sys_parameters, 'sys_parameters property')
 
 class Gas(DesorptionSystem):
     """
@@ -99,13 +99,13 @@ class Gas(DesorptionSystem):
     gas_parameters = property(get_gas_parameters, 'gas_parameters property')
 
     def get_translation_partition_function(self):
-        volume = KB_J * self.temperature / self.total_pressure
-        Lambda = np.sqrt((H_J ** 2) / (2 * np.pi * self.mass * KB_J * self.temperature))
+        volume = C.k * self.temperature / self.total_pressure
+        Lambda = np.sqrt((C.h ** 2) / (2 * np.pi * self.mass * C.k * self.temperature))
         qt = volume / (Lambda ** 3)
         return qt
 
     def get_rotation_partition_function_nonlinear(self):
-        qr_nonlinear = 1 / self.symmetry_factor * (((KB_J * self.temperature / (H_J * C)) ** 1.5) * np.sqrt(np.pi / (self.rot_const_a * self.rot_const_b * self.rot_const_c)))
+        qr_nonlinear = 1 / self.symmetry_factor * (((C.k * self.temperature / (C.h * C.c)) ** 1.5) * np.sqrt(np.pi / (self.rot_const_a * self.rot_const_b * self.rot_const_c)))
         return qr_nonlinear
         
     def get_vibration_partition_function(self):
@@ -129,7 +129,7 @@ class Adsorbent(Gas):
     hvs = 頻率能量, meV
     desorption_energy = 脫付能
     """
-    def __init__(self, hv_surface, hv_adsorbent): #, adsorbent):
+    def __init__(self, hv_surface, hv_adsorbent, desorption_energy): #, adsorbent):
         for hv in hv_surface:
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
@@ -138,13 +138,14 @@ class Adsorbent(Gas):
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
         self.hv_adsorbent = hv_adsorbent
+        self.desorption_energy = 9.9
         self.E_T_list = []
         
     
     def get_adsorbent_parameters(self):
         return self.hv_surface, self.hv_adsorbent, self.desorption_energy, self.E_T_list
         
-    def set_adsorbent_parameters(self, hv_surface, hv_adsorbent, E_T_list):#, desorption_energy):
+    def set_adsorbent_parameters(self, hv_surface, hv_adsorbent, desorption_energy, E_T_list):#, desorption_energy):
         for hv in hv_surface:
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
@@ -153,12 +154,13 @@ class Adsorbent(Gas):
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
         self.hv_adsorbent = hv_adsorbent
+        self.desorption_energy = desorption_energy
         self.E_T_list = E_T_list
     
     adsorbent_parameters = property(get_adsorbent_parameters, 'gas_parameters property')
     
     def get_rate_const_adsorption(self):
-        rate_const_adsorption = self.total_pressure / (np.sqrt(2 * np.pi * self.mass * KB_J * self.temperature) * self.active_site)
+        rate_const_adsorption = self.total_pressure / (np.sqrt(2 * np.pi * self.mass * C.k * self.temperature) * self.active_site)
         return rate_const_adsorption
         
     def get_adsorbent_vibration_partition_function(self, hvs):
@@ -173,7 +175,8 @@ class Adsorbent(Gas):
         partition_function_term = qa * q_star / qa_star
         return partition_function_term
         
-    def get_v(self):
+    def get_v(self, temperature):
+        self.temperature = temperature
         v = self.get_rate_partition_function_term() * self.get_rate_const_adsorption()
         return v
         
@@ -182,20 +185,20 @@ class Adsorbent(Gas):
 #==============================================================================
 
     def get_theta_distribution(self, E):
-        A = self.get_v()
-        theta = np.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * np.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature)))
+        A = self.get_v(self.temperature)
+        theta = np.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * np.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature / E)))
         return theta
 
     def get_f_energy_distribution(self, E):
-        A = self.get_v()
+        A = self.get_v(self.temperature)
         theta = np.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * np.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature / E)))
 #        theta = float(math.exp(-1 * KB_EV * A * math.pow(self.temperature, 2) * math.exp(-1 * E / (KB_EV * self.temperature))/(self.beta * E * np.sqrt(1 + 2 * KB_EV * self.temperature))))
         f = A * np.exp(-1 * E / (KB_EV * self.temperature)) * theta
         return f
         
     def get_E_star(self):
-        x = Symbol('x', positive=True) # x = E_star / RT - 0.368
-        A = self.get_v()
+        x = Symbol('x', positive=True) # x = E_star / RT - 0.368 from eqn(18)
+        A = self.get_v(self.temperature)
         t = self.temperature
         [c] = solve(x * exp(x) - (A * t) / self.beta, x)
         E_star = (c + 0.368) * KB_EV * self.temperature 
@@ -218,8 +221,7 @@ class Adsorbent(Gas):
 #        self.E_T_dict = E_T_dict
         self.E_T_list = [(k, E_T_dict[k]) for k in sorted(E_T_dict.keys())]
         return self.E_T_list
-            
-            
+                        
     def get_T(self, E):
         for i in range(len(self.E_T_list) - 1):
             (x,y) = self.E_T_list[i]
@@ -238,9 +240,52 @@ class Adsorbent(Gas):
             (x_mi, y_mi) = self.E_T_list[i-1]
             T =  y - (y - y_mi) / (x - x_mi) * (x - E)
             return round(T, 4)
-            
-    
-    
+
+class Reactant(Adsorbent):
+    """
+    反應之吸附物
+    hvs = 頻率能量, meV
+    reaction_barrier = 反應能
+    """
+    def __init__(self, hv_IS, hv_TS, barrier): #, adsorbent):
+        for hv in hv_IS:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
+        self.hv_IS = hv_IS
+        for hv in hv_TS:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
+        self.hv_TS = hv_TS
+        self.barrier = 0
         
+    
+    def get_reactant_parameters(self):
+        return self.hv_surface, self.hv_IS, self.hv_TS, self.barrier
+        
+    def set_reactant_parameters(self, hv_IS, hv_TS, barrier):#, desorption_energy):
+        for hv in hv_IS:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
+        self.hv_IS = hv_IS
+        for hv in hv_TS:
+            if hv > 10000 or hv < 1:
+                print("hv unit is meV?")
+        self.hv_TS = hv_TS
+        if barrier > 6:
+            print("barrier unit is eV?")
+        self.barrier = 0
+    
+    reactant_parameters = property(get_reactant_parameters, 'gas_parameters property')   
+
+#==============================================================================
+#       TS theory            
+#==============================================================================            
+    def get_rate_constant(self, t):
+        self.temperature = t
+        q_IS = self.get_adsorbent_vibration_partition_function(self.hv_IS)
+        q_TS = self.get_adsorbent_vibration_partition_function(self.hv_TS)
+        rate_constant = (C.k * self.temperature / C.h) * (q_TS/q_IS) * np.exp(- self.barrier / (KB_EV * self.temperature))
+        return rate_constant
+            
 if __name__ == "__main__":
     pass
