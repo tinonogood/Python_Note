@@ -138,7 +138,7 @@ class Adsorbent(Gas):
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
         self.hv_adsorbent = hv_adsorbent
-        self.desorption_energy = 9.9
+        self.desorption_energy = desorption_energy
         self.E_T_list = []
         
     
@@ -256,7 +256,7 @@ class Reactant(Adsorbent):
             if hv > 10000 or hv < 1:
                 print("hv unit is meV?")
         self.hv_TS = hv_TS
-        self.barrier = 0
+        self.barrier = barrier
         
     
     def get_reactant_parameters(self):
@@ -273,7 +273,7 @@ class Reactant(Adsorbent):
         self.hv_TS = hv_TS
         if barrier > 6:
             print("barrier unit is eV?")
-        self.barrier = 0
+        self.barrier = barrier
     
     reactant_parameters = property(get_reactant_parameters, 'gas_parameters property')   
 
