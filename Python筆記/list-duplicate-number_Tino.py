@@ -16,6 +16,3 @@ if __name__ == '__main__':
     assert sol.checkDuplicate([1,2,3,1,5],2) is False, 'Fail'
     assert sol.checkDuplicate([1,2,3,1,5],5) is False, 'Fail'
     assert sol.checkDuplicate([1,2,3,1,5],3) is True, 'Fail'
-
-# l = [1,2,3,1,5]
-# print(l[2:5])

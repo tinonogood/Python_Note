@@ -12,9 +12,14 @@ class Solution:
 			bit_sum = list1[i] + list2[i] + carry
 			answer.append(bit_sum%10)
 			carry = bit_sum//10
+
+		if carry != 0:
+			answer.append(carry)
+
 		return answer
 
 
 if __name__ == '__main__':
     sol = Solution()
     assert sol.sumReversedList([1,2,3], [4,5,8,4]) == [5,7,1,5], 'Fail'
+    assert sol.sumReversedList([1,2,3], [9,9,8]) == [0,2,2,1], 'Fail'
