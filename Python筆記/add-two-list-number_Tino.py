@@ -21,5 +21,6 @@ class Solution:
 
 if __name__ == '__main__':
     sol = Solution()
+    assert sol.sumReversedList([], []) == [], 'Fail'
     assert sol.sumReversedList([1,2,3], [4,5,8,4]) == [5,7,1,5], 'Fail'
     assert sol.sumReversedList([1,2,3], [9,9,8]) == [0,2,2,1], 'Fail'
