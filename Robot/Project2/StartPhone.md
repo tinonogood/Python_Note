@@ -4,6 +4,6 @@ $Android_SDK\emulator>emulator -avd test
 
 ## Appium Interface
 
->appium
+$>appium
 
-android_example.py
+$>android_example.py
