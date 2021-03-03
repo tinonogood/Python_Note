@@ -52,4 +52,23 @@ Unchangeable: string, turple
     b = a.replace('string', 'longer string')
     # a = 'this is a string'; b = 'this is a longer string'
 
+## Ternary Op
+
+    value = true-expr if condition else false-expr
+
+    'Non-negative' if x >= 0 else 'Negative'
     
+    if x >=0:
+        value = 'Non-negative'
+    else:
+        value = 'Negative'
+       
+# Ch3
+
+
+
+# Ch4
+
+# Ch5
+
+# Ch7
